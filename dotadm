@@ -1,0 +1,45 @@
+#!/bin/sh
+STOW_FLAGS=(-v --ignore=.preinstall)
+
+function print_usage {
+	echo -e \
+"usage: $0 <subcommand>
+
+SUBCOMMANDS
+  install <package>    links a package
+  remove  <package>    unlinks a package\
+"
+}
+
+function log {
+	echo -e "\e[90m\e[1m>> $1\e[0m"
+}
+
+function install {
+	log "installing $1..."
+
+	log "running preinstall script"
+	preinstall="$1/.preinstall"
+	[ -f "$preinstall" ] && "$preinstall"
+
+	log "linking files"
+	stow ${STOW_FLAGS[@]} "$1"
+	log "done"
+}
+
+function remove {
+	log "removing $1..."
+	stow ${STOW_FLAGS[@]} -D "$1"
+	log "done"
+}
+
+case "$1" in
+	install)
+		for pkg in "$@"; do
+			[ "$pkg" = "install" ] && continue;
+			install $pkg
+		done
+		;;
+	remove) remove $2;;
+	*) print_usage
+esac
