@@ -35,8 +35,8 @@ remove() {
 
 case "$1" in
 	install)
+		shift
 		for pkg in "$@"; do
-			[ "$pkg" = "install" ] && continue;
 			install $pkg
 		done
 		;;
