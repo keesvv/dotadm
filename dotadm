@@ -1,8 +1,8 @@
 #!/bin/sh
-STOW_FLAGS=(-v --ignore=.preinstall)
+STOW_FLAGS="-v --ignore=.preinstall"
 
-function print_usage {
-	echo -e \
+print_usage () {
+	echo \
 "usage: $0 <subcommand>
 
 SUBCOMMANDS
@@ -11,11 +11,11 @@ SUBCOMMANDS
 "
 }
 
-function log {
-	echo -e "\e[90m\e[1m>> $1\e[0m"
+log() {
+	printf "\033[90m\033[1m>> %s\033[0m\n" "$1"
 }
 
-function install {
+install() {
 	log "installing $1..."
 
 	log "running preinstall script"
@@ -23,13 +23,13 @@ function install {
 	[ -f "$preinstall" ] && "$preinstall"
 
 	log "linking files"
-	stow ${STOW_FLAGS[@]} "$1"
+	stow $STOW_FLAGS "$1"
 	log "done"
 }
 
-function remove {
+remove() {
 	log "removing $1..."
-	stow ${STOW_FLAGS[@]} -D "$1"
+	stow $STOW_FLAGS -D "$1"
 	log "done"
 }
 
